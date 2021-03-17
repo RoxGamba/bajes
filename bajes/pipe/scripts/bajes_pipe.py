@@ -511,6 +511,17 @@ def write_run_string(config, tags, outdir):
                     run_string += '--ecc-min {} --ecc-max {} '.format(config['gw-prior']['ecc-min'],config['gw-prior']['ecc-max'])
                 else:
                     logger.warning("Impossible to read bounds for eccentricity parameter. Using default option.")
+        
+        if 'omg0-flag' in list_keys_in_prior:
+
+            if int(config['gw-prior']['omg0-flag']):
+
+                run_string += '--vary-omega0 '
+
+                if 'omg0-min' in list_keys_in_prior and 'omg0-max' in list_keys_in_prior:
+                    run_string += '--omg0-min {} --omg0-max {} '.format(config['gw-prior']['omg0-min'],config['gw-prior']['omg0-max'])
+                else:
+                    logger.warning("Impossible to read bounds for omega_0 parameter. Using default option.")
 
         using_binning = 0
 

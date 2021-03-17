@@ -408,6 +408,10 @@ def parse_core_options():
     parser.add_option('--ecc-min',  dest='ecc_min', type='float',   default=None,   help='lower eccentricity prior bound')
     parser.add_option('--ecc-max',  dest='ecc_max', type='float',   default=None,   help='upper eccentricity prior bound')
 
+    parser.add_option('--vary-omega0', dest='omg0_flag',     default=False,  action="store_true",    help='sample the omega_0 (initial frequency) of the WF generator')
+    parser.add_option('--omg0-min',    dest='omg0_min',   type='float',   default=None,   help='lower initial frequency prior bound')
+    parser.add_option('--omg0-max',    dest='omg0_max',   type='float',   default=None,   help='upper initial frequency prior bound')
+
     # Optional, marginalize over phi_ref and/or time_shift
     parser.add_option('--marg-phi-ref',         dest='marg_phi_ref',        default=False,  action="store_true",   help='phi-ref marginalization flag')
     parser.add_option('--marg-time-shift',      dest='marg_time_shift',     default=False,  action="store_true",   help='time-shift marginalization flag')
@@ -769,6 +773,12 @@ def initialize_gwlikelihood_kwargs(opts):
     else:
         ecc_bounds=None
 
+    if opts.omg0_flag:
+        if opts.omg0_min != None and opts.omg0_max != None:
+            omg0_bounds = [opts.omg0_min, opts.omg0_max]
+    else:
+        omg0_bounds=None
+
     # define priors
     priors, l_kwargs['spcal_freqs'], l_kwargs['len_weights'] = initialize_gwprior(opts.ifos, [opts.mchirp_min,opts.mchirp_max],opts.q_max,
                                                                                               opts.f_min, opts.f_max, opts.t_gps, opts.seglen, opts.srate, opts.approx,
@@ -779,8 +789,8 @@ def initialize_gwlikelihood_kwargs(opts):
                                                                                               time_shift_bounds=[opts.time_shift_min, opts.time_shift_max],
                                                                                               fixed_names=opts.fixed_names, fixed_values=opts.fixed_values,
                                                                                               spcals = spcals, nspcal = opts.nspcal , nweights = opts.nweights,
-                                                                                              ej_flag = opts.ej_flag, ecc_flag = opts.ecc_flag,
-                                                                                              energ_bounds=e_bounds, angmom_bounds=j_bounds, ecc_bounds=ecc_bounds,
+                                                                                              ej_flag = opts.ej_flag, ecc_flag = opts.ecc_flag, omg0_flag = opts.omg0_flag,
+                                                                                              energ_bounds=e_bounds, angmom_bounds=j_bounds, ecc_bounds=ecc_bounds, omg0_bounds = omg0_bounds,
                                                                                               marg_phi_ref = opts.marg_phi_ref, marg_time_shift = opts.marg_time_shift,
                                                                                               tukey_alpha = opts.alpha, lmax = opts.lmax,
                                                                                               prior_grid=opts.priorgrid, kind='linear')
@@ -876,8 +886,8 @@ def initialize_gwprior(ifos, mchirp_bounds, q_max, f_min, f_max, t_gps, seglen, 
                        time_shift_bounds=None,
                        fixed_names=[], fixed_values=[],
                        spcals=None, nspcal=0, nweights=0,
-                       ej_flag = False, ecc_flag = False,
-                       energ_bounds=None, angmom_bounds=None, ecc_bounds=None,
+                       ej_flag = False, ecc_flag = False, omg0_flag=False,
+                       energ_bounds=None, angmom_bounds=None, ecc_bounds=None, omg0_bounds=None,
                        marg_phi_ref=False, marg_time_shift=False,
                        tukey_alpha=None, lmax=2,
                        prior_grid=2000, kind='linear'):
@@ -1272,6 +1282,14 @@ def initialize_gwprior(ifos, mchirp_bounds, q_max, f_min, f_max, t_gps, seglen, 
 
     else:
         dict['eccentricity'] = Constant('eccentricity', 0.)
+    
+    if omg0_flag:
+        if omg0_bounds == None:
+            logger.warning("Requested bounds for initial frequency parameter is empty. Setting standard bound [f_min-5,f_min+5]")
+            omg0_bounds = [f_min-5, f_min+5]
+        dict['omg0'] = Parameter(name='omg0', min=omg0_bounds[0], max=omg0_bounds[1])
+    else:
+        dict['omg0'] = Constant('omg0', f_min)
 
     # set fixed parameters
     if len(fixed_names) != 0 :
