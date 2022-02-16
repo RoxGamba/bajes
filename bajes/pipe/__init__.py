@@ -401,6 +401,7 @@ def parse_core_options():
     # Extra parameters
     parser.add_option('--use-energy-angmom',    dest='ej_flag',     default=False,  action="store_true",    help='include energy and angular momentum parameters')
     parser.add_option('--use-eccentricity',     dest='ecc_flag',    default=False,  action="store_true",    help='include energy and angular momentum parameters')
+    parser.add_option('--use-ecc-log-prior',     dest='ecc_log_prior',    default=False,  action="store_true",    help='include energy and angular momentum parameters')
     parser.add_option('--e-min',    dest='e_min',   type='float',   default=None,   help='lower energy prior bound')
     parser.add_option('--e-max',    dest='e_max',   type='float',   default=None,   help='upper energy prior bound')
     parser.add_option('--j-min',    dest='j_min',   type='float',   default=None,   help='lower angular momentum prior bound')
@@ -779,7 +780,9 @@ def initialize_gwlikelihood_kwargs(opts):
                                                                                               time_shift_bounds=[opts.time_shift_min, opts.time_shift_max],
                                                                                               fixed_names=opts.fixed_names, fixed_values=opts.fixed_values,
                                                                                               spcals = spcals, nspcal = opts.nspcal , nweights = opts.nweights,
-                                                                                              ej_flag = opts.ej_flag, ecc_flag = opts.ecc_flag,
+                                                                                              ej_flag = opts.ej_flag,
+                                                                                  ecc_flag = opts.ecc_flag,
+                                                                                  ecc_log_prior = opts.ecc_log_prior,
                                                                                               energ_bounds=e_bounds, angmom_bounds=j_bounds, ecc_bounds=ecc_bounds,
                                                                                               marg_phi_ref = opts.marg_phi_ref, marg_time_shift = opts.marg_time_shift,
                                                                                               tukey_alpha = opts.alpha, lmax = opts.lmax,
@@ -876,7 +879,7 @@ def initialize_gwprior(ifos, mchirp_bounds, q_max, f_min, f_max, t_gps, seglen, 
                        time_shift_bounds=None,
                        fixed_names=[], fixed_values=[],
                        spcals=None, nspcal=0, nweights=0,
-                       ej_flag = False, ecc_flag = False,
+                       ej_flag = False, ecc_flag = False, ecc_log_prior = False,
                        energ_bounds=None, angmom_bounds=None, ecc_bounds=None,
                        marg_phi_ref=False, marg_time_shift=False,
                        tukey_alpha=None, lmax=2,
@@ -1268,7 +1271,13 @@ def initialize_gwprior(ifos, mchirp_bounds, q_max, f_min, f_max, t_gps, seglen, 
             logger.warning("Requested bounds for eccentricity parameter is empty. Setting standard bound [1e-3,1]")
             ecc_bounds = [0.001, 1.]
 
-        dict['eccentricity'] = Parameter(name='eccentricity', min=ecc_bounds[0], max=ecc_bounds[1])
+        if not ecc_log_prior:
+            dict['eccentricity'] = Parameter(name='eccentricity', min=ecc_bounds[0], max=ecc_bounds[1])
+        else:
+            logger.warning("Using log-uniform prior for eccentricity parameter")
+            dict['eccentricity'] = Parameter(name='eccentricity',
+                                             min=ecc_bounds[0], max=ecc_bounds[1],
+                                             prior='log-uniform')
 
     else:
         dict['eccentricity'] = Constant('eccentricity', 0.)
