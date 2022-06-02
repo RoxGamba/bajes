@@ -421,12 +421,19 @@ def parse_core_options():
     # Extra parameters
     parser.add_option('--use-energy-angmom', dest='ej_flag',     default=False,  action="store_true",    help='include energy and angular momentum parameters')
     parser.add_option('--use-eccentricity',  dest='ecc_flag',    default=False,  action="store_true",    help='include energy and angular momentum parameters')
+    parser.add_option('--use-scalartensor',  dest='st_flag',    default=False,  action="store_true",    help='include scalar-tensor parameters')
     parser.add_option('--e-min',             dest='e_min',   type='float',   default=None,   help='lower energy prior bound')
     parser.add_option('--e-max',             dest='e_max',   type='float',   default=None,   help='upper energy prior bound')
     parser.add_option('--j-min',             dest='j_min',   type='float',   default=None,   help='lower angular momentum prior bound')
     parser.add_option('--j-max',             dest='j_max',   type='float',   default=None,   help='upper angular momentum prior bound')
     parser.add_option('--ecc-min',           dest='ecc_min', type='float',   default=None,   help='lower eccentricity prior bound')
     parser.add_option('--ecc-max',           dest='ecc_max', type='float',   default=None,   help='upper eccentricity prior bound')
+    parser.add_option('--q1-min',           dest='q1_min', type='float',   default=None,   help='lower q1 prior bound')   
+    parser.add_option('--q1-max',           dest='q1_max', type='float',   default=None,   help='upper q1 prior bound')
+    parser.add_option('--q2-min',           dest='q2_min', type='float',   default=None,   help='lower q2 prior bound')   
+    parser.add_option('--q2-max',           dest='q2_max', type='float',   default=None,   help='upper q2 prior bound')
+    parser.add_option('--mphi-min',           dest='mphi_min', type='float',   default=None,   help='lower mphi prior bound')
+    parser.add_option('--mphi-max',           dest='mphi_max', type='float',   default=None,   help='Upper mphi prior bound')
 
     # Optional, marginalize over phi_ref and/or time_shift
     parser.add_option('--marg-phi-ref',      dest='marg_phi_ref',        default=False,  action="store_true",   help='phi-ref marginalization flag')

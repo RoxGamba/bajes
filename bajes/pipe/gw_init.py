@@ -144,6 +144,28 @@ def initialize_gwlikelihood_kwargs(opts):
     else:
         ecc_bounds=None
 
+    # check for extra parameters
+    if opts.st_flag :
+        # scalar tensor parameters q_1
+        if opts.q1_min != None and opts.q1_max != None:
+            q1_bounds = [opts.q1_min, opts.q1_max]
+        else:
+            q1_bounds = None 
+        # scalar tensor parameters q_2
+        if opts.q2_min != None and opts.q2_max != None:
+            q2_bounds = [opts.q2_min, opts.q2_max]
+        else:
+            q2_bounds = None 
+        # scalar tensor parameters m_phi
+        if opts.mphi_min != None and opts.mphi_max != None:
+            mphi_bounds = [opts.mphi_min, opts.mphi_max]
+        else:
+            mphi_bounds = None 
+    else:
+        q1_bounds   = None 
+        q2_bounds   = None 
+        mphi_bounds = None
+
     # check spins
     if opts.spin_max is None and opts.spin_flag != 'no-spins':
         # try to set individual spin priors
@@ -182,9 +204,13 @@ def initialize_gwlikelihood_kwargs(opts):
                                                                                   nweights = opts.nweights,
                                                                                   ej_flag = opts.ej_flag,
                                                                                   ecc_flag = opts.ecc_flag,
+                                                                                  st_flag  = opts.st_flag,
                                                                                   energ_bounds=e_bounds,
                                                                                   angmom_bounds=j_bounds,
                                                                                   ecc_bounds=ecc_bounds,
+                                                                                  q1_bounds= q1_bounds,
+                                                                                  q2_bounds=q2_bounds,
+                                                                                  mphi_bounds=mphi_bounds,
                                                                                   marg_phi_ref = opts.marg_phi_ref,
                                                                                   marg_time_shift = opts.marg_time_shift,
                                                                                   tukey_alpha = opts.alpha,
@@ -244,8 +270,9 @@ def initialize_gwprior(ifos,
                        fixed_names=[], fixed_values=[],
                        extra_opt =[], extra_opt_val=[],
                        spcals=None, nspcal=0, nweights=0,
-                       ej_flag = False, ecc_flag = False,
+                       ej_flag = False, ecc_flag = False, st_flag = False,
                        energ_bounds=None, angmom_bounds=None, ecc_bounds=None,
+                       q1_bounds = None, q2_bounds = None, mphi_bounds = None,
                        marg_phi_ref=False, marg_time_shift=False,
                        tukey_alpha=None,
                        lmax=2,
@@ -735,6 +762,23 @@ def initialize_gwprior(ifos,
         dict['eccentricity'] = Parameter(name='eccentricity', min=ecc_bounds[0], max=ecc_bounds[1])
     else:
         dict['eccentricity'] = Constant('eccentricity', 0.)
+
+    # include extra parameters: scalar-tensor
+    if st_flag:
+        if q1_bounds == None:
+            logger.warning("Requested bounds for q_1 parameter is empty. Setting standard bound [0.,1]")
+            q1_bounds == [0., 1.]
+        dict['q1'] = Parameter(name='q1', min=q1_bounds[0], max=q1_bounds[1])
+
+        if q2_bounds == None:
+                logger.warning("Requested bounds for q_2 parameter is empty. Setting standard bound [0.,1]")
+                q2_bounds == [0., 1.]
+        dict['q2'] = Parameter(name='q2', min=q2_bounds[0], max=q2_bounds[1])
+        
+        if mphi_bounds == None:
+                logger.warning("Requested bounds for mphi parameter is empty. Setting standard bound [0.,1]")
+                mphi_bounds == [0., 1.]
+        dict['mphi'] = Parameter(name='mphi', min=q2_bounds[0], max=q2_bounds[1])
 
     # include NRPMw additional parameters
     if 'NRPMw' in approx:
