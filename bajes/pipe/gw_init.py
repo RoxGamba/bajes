@@ -145,7 +145,7 @@ def initialize_gwlikelihood_kwargs(opts):
         ecc_bounds=None
 
     # check for extra parameters
-    if opts.st_flag :
+    if opts.st_flag_q :
         # scalar tensor parameters q_1
         if opts.q1_min != None and opts.q1_max != None:
             q1_bounds = [opts.q1_min, opts.q1_max]
@@ -155,15 +155,19 @@ def initialize_gwlikelihood_kwargs(opts):
         if opts.q2_min != None and opts.q2_max != None:
             q2_bounds = [opts.q2_min, opts.q2_max]
         else:
-            q2_bounds = None 
-        # scalar tensor parameters m_phi
+            q2_bounds = None
+
+    else:
+        q1_bounds   = None 
+        q2_bounds   = None 
+
+    if opts.st_flag_mphi :
+        # scalar tensor parameter m_phi
         if opts.mphi_min != None and opts.mphi_max != None:
             mphi_bounds = [opts.mphi_min, opts.mphi_max]
         else:
             mphi_bounds = None 
     else:
-        q1_bounds   = None 
-        q2_bounds   = None 
         mphi_bounds = None
 
     # check spins
@@ -204,7 +208,8 @@ def initialize_gwlikelihood_kwargs(opts):
                                                                                   nweights = opts.nweights,
                                                                                   ej_flag = opts.ej_flag,
                                                                                   ecc_flag = opts.ecc_flag,
-                                                                                  st_flag  = opts.st_flag,
+                                                                                  st_flag_q  = opts.st_flag_q,
+                                                                                  st_flag_mphi = opts.st_flag_mphi,
                                                                                   energ_bounds=e_bounds,
                                                                                   angmom_bounds=j_bounds,
                                                                                   ecc_bounds=ecc_bounds,
@@ -270,7 +275,7 @@ def initialize_gwprior(ifos,
                        fixed_names=[], fixed_values=[],
                        extra_opt =[], extra_opt_val=[],
                        spcals=None, nspcal=0, nweights=0,
-                       ej_flag = False, ecc_flag = False, st_flag = False,
+                       ej_flag = False, ecc_flag = False, st_flag_q = False,st_flag_mphi = False,
                        energ_bounds=None, angmom_bounds=None, ecc_bounds=None,
                        q1_bounds = None, q2_bounds = None, mphi_bounds = None,
                        marg_phi_ref=False, marg_time_shift=False,
@@ -764,7 +769,7 @@ def initialize_gwprior(ifos,
         dict['eccentricity'] = Constant('eccentricity', 0.)
 
     # include extra parameters: scalar-tensor
-    if st_flag:
+    if st_flag_q:
         if q1_bounds == None:
             logger.warning("Requested bounds for q_1 parameter is empty. Setting standard bound [0.,1]")
             q1_bounds == [0., 1.]
@@ -775,6 +780,7 @@ def initialize_gwprior(ifos,
                 q2_bounds == [0., 1.]
         dict['q2'] = Parameter(name='q2', min=q2_bounds[0], max=q2_bounds[1])
         
+    if st_flag_mphi:
         if mphi_bounds == None:
                 logger.warning("Requested bounds for mphi parameter is empty. Setting standard bound [0.,1]")
                 mphi_bounds == [0., 1.]

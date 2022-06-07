@@ -147,6 +147,11 @@ class Waveform(object):
             self.wave_func  = teobresums_hyperb_wrapper
             self.domain     = 'time'
 
+        elif self.approx == 'STTEOBResumS':
+            from .approx.teobresums import teobresums_scalartensor_wrapper
+            self.wave_func  = teobresums_scalartensor_wrapper
+            self.domain     = 'time'
+
         elif self.approx == 'NRPM':
             from .approx.nrpm import nrpm_wrapper
             self.wave_func  = nrpm_wrapper

@@ -421,7 +421,8 @@ def parse_core_options():
     # Extra parameters
     parser.add_option('--use-energy-angmom', dest='ej_flag',     default=False,  action="store_true",    help='include energy and angular momentum parameters')
     parser.add_option('--use-eccentricity',  dest='ecc_flag',    default=False,  action="store_true",    help='include energy and angular momentum parameters')
-    parser.add_option('--use-scalartensor',  dest='st_flag',    default=False,  action="store_true",    help='include scalar-tensor parameters')
+    parser.add_option('--use-scalartensor-q',  dest='st_flag_q',    default=False,  action="store_true",    help='include scalar-tensor parameters q1, q2')
+    parser.add_option('--use-scalartensor-mphi',  dest='st_flag_mphi',    default=False,  action="store_true",    help='include scalar-tensor parameter mphi')    
     parser.add_option('--e-min',             dest='e_min',   type='float',   default=None,   help='lower energy prior bound')
     parser.add_option('--e-max',             dest='e_max',   type='float',   default=None,   help='upper energy prior bound')
     parser.add_option('--j-min',             dest='j_min',   type='float',   default=None,   help='lower angular momentum prior bound')
