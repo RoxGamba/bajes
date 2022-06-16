@@ -157,7 +157,7 @@ def teobresums_scalartensor_wrapper(freqs, params):
     # reject mphi > omg_i if mphi is in params
     if 'mphi' in params.keys():
         MSUNS = 4.925491025543575903411922162094833998e-6
-        if (params['mphi'] > params['f-min']*params['mtot']*MSUNS/2): 
+        if (params['mphi'] > params['f_min']*params['mtot']*MSUNS*np.pi):
             return [None], [None]
 
     # set TEOB dict
