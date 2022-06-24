@@ -366,6 +366,12 @@ def parse_core_options():
     parser.add_option('--tshift-min',        dest='time_shift_min', default=[],        type='float',   action="append",      help='lower time shift prior bound')
 
     #
+    # EOS OPTIONS
+    #
+    parser.add_option('--fix-eos',        dest='fix_eos',          default=False,                      action="store_true",  help='fix the equation of state')
+    parser.add_option('--fix-eos-name',   dest='fix_eos_name',     default=None,       type='string',                        help='name of the fixed equation of state')
+
+    #
     # GW OPTIONS
     #
 

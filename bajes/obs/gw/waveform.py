@@ -9,6 +9,7 @@ from .strain import windowing, lagging
 
 from .utils import compute_lambda_tilde, compute_delta_lambda
 from ..utils.tov import TOVSolver
+from ..utils.sequence import Sequence
 
 from collections import namedtuple
 PolarizationTuple = namedtuple("PolarizationTuple", ("plus","cross"), defaults=([None],[None]))
@@ -344,6 +345,27 @@ class Waveform(object):
                 if m2 > tov.Mmax: return PolarizationTuple()
                 params['lambda2'] = tov.tidal_deformability(m2)
                 logger.debug("Estimated lambda={} for mass={}".format(params['lambda2'], m2))
+
+        # use fixed EOS
+        if 'EOS' in params.keys():
+            if params['Sequence'] == None:
+                # initialize the sequence, do it *just once*
+                params['Sequence'] = Sequence(params['EOS'])
+
+            sq = params['Sequence']
+            
+            # sanity check
+            if max(m1,m2) > sq.max_mass or min(m1,m2) < sq.min_mass:
+                return PolarizationTuple()
+
+            # compute tidal deformabilities
+            if 'lambda1' not in params.keys():
+                m1  = params['mtot']*params['q']/(1.+params['q'])
+                params['lambda1'] = sq.lambda_of_m(m1)
+
+            if 'lambda2' not in params.keys():
+                m2  = params['mtot']/(1.+params['q'])
+                params['lambda2'] = sq.lambda_of_m(m2)
 
         # include iota
         if 'cosi' in params.keys():

@@ -167,6 +167,8 @@ def initialize_gwlikelihood_kwargs(opts):
                                                                                   lambda_flag=opts.lambda_flag,
                                                                                   lambda_max=opts.lambda_max,
                                                                                   lambda_min=opts.lambda_min,
+                                                                                  eos_flag=opts.fix_eos, 
+                                                                                  eos_name = opts.fix_eos_name,
                                                                                   dist_flag=opts.dist_flag,
                                                                                   dist_max=opts.dist_max,
                                                                                   dist_min=opts.dist_min,
@@ -236,6 +238,7 @@ def initialize_gwprior(ifos,
                        freqs,
                        spin_flag='no-spins', spin_max=None,
                        lambda_flag='no-tides', lambda_max=None, lambda_min=None,
+                       eos_flag=False , eos_name = None,
                        dist_flag='vol', dist_max=None, dist_min=None,
                        time_shift_bounds=None,
                        fixed_names=[], fixed_values=[],
@@ -524,7 +527,7 @@ def initialize_gwprior(ifos,
                                         prior='uniform')
 
         elif lambda_flag == 'bns-eos4p':
-            dict['eos_logp1'] = Parameter(name='eos_logp1', min=32., max=35.)
+            dict['eos_logp1']  = Parameter(name='eos_logp1', min=32., max=35.)
             dict['eos_gamma1'] = Parameter(name='eos_gamma1', min=1.4,  max=5.)
             dict['eos_gamma2'] = Parameter(name='eos_gamma2', min=0,    max=8.)
             dict['eos_gamma3'] = Parameter(name='eos_gamma3', min=0.5,  max=8.)
@@ -556,6 +559,15 @@ def initialize_gwprior(ifos,
             dict['eos_gamma1'] = Parameter(name='eos_gamma1', min=1.4,  max=5.)
             dict['eos_gamma2'] = Parameter(name='eos_gamma2', min=0,    max=8.)
             dict['eos_gamma3'] = Parameter(name='eos_gamma3', min=0.5,  max=8.)
+
+        elif eos_flag:
+            if eos_name:
+                dict['EOS']     = eos_name
+                dict['Sequence'] = None # initialize a sequence as None for now
+
+            else:
+                logger.error("No EOS name specified")
+                raise ValueError("No EOS name specified!")
 
         else:
             logger.error("Unable to read tidal flag for Prior. Please use one of the following: 'no-tides', 'bns-tides', 'bhns-tides', 'nsbh-tides' or flags for parametrized EOS.")

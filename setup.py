@@ -84,7 +84,8 @@ setup(# metadata
                               "pipe/data/gw/asd/design/*.txt",
                               "pipe/data/gw/spcal/events/*/*.txt",
                               "pipe/data/kn/filter/AT2017gfo/*.txt",
-                              "obs/kn/fluxfactors/*.dat"]},
+                              "obs/kn/fluxfactors/*.dat",
+                              "obs/utils/eos/sequences/*.txt"]},
 
       # make scripts executable
       scripts   = ['bajes/pipe/scripts/bajes_core.py',
