@@ -370,6 +370,8 @@ def parse_core_options():
     #
     parser.add_option('--fix-eos',        dest='fix_eos',          default=False,                      action="store_true",  help='fix the equation of state')
     parser.add_option('--fix-eos-name',   dest='fix_eos_name',     default=None,       type='string',                        help='name of the fixed equation of state')
+    parser.add_option('--fix-eos-st',     dest='fix_eos_st',       default=False,                      action="store_true",  help='Fix the equation of state with modified scalar-tensor corrections')
+    parser.add_option('--fix-eos-name-st',dest='fix_eos_name_st',  default=False,      type='string',                        help='name of the fixed equation of state with modified scalar-tensor corrections')
 
     #
     # GW OPTIONS

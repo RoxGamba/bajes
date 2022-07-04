@@ -10,6 +10,7 @@ from .strain import windowing, lagging
 from .utils import compute_lambda_tilde, compute_delta_lambda
 from ..utils.tov import TOVSolver
 from ..utils.sequence import Sequence
+from ..utils.st_model import ST_model
 
 from collections import namedtuple
 PolarizationTuple = namedtuple("PolarizationTuple", ("plus","cross"), defaults=([None],[None]))
@@ -357,20 +358,41 @@ class Waveform(object):
                 # initialize the sequence, do it *just once*
                 params['Sequence'] = Sequence(params['EOS'])
 
-            sq = params['Sequence']
-            
+            sq  = params['Sequence']
+            m1  = params['mtot']*params['q']/(1.+params['q'])
+            m2  = params['mtot']/(1.+params['q'])
+
             # sanity check
-            if max(m1,m2) > sq.max_mass or min(m1,m2) < sq.min_mass:
+            if (max(m1,m2) > sq.max_mass or min(m1,m2) < sq.min_mass):
                 return PolarizationTuple()
 
             # compute tidal deformabilities
             if 'lambda1' not in params.keys():
-                m1  = params['mtot']*params['q']/(1.+params['q'])
                 params['lambda1'] = sq.lambda_of_m(m1)
 
             if 'lambda2' not in params.keys():
-                m2  = params['mtot']/(1.+params['q'])
                 params['lambda2'] = sq.lambda_of_m(m2)
+        
+        # use ST model
+        if 'log_alpha' in params.keys():
+            if params['ST_model'] == None:
+                # initialize the ST model, do it *just once*
+                params['ST_model'] = ST_model(name=params['EOS_ST'])
+            
+            st_mod = params['ST_model']
+            m1  = params['mtot']*params['q']/(1.+params['q'])
+            m2  = params['mtot']/(1.+params['q'])
+
+            # sanity check
+            if (max(m1,m2) > st_mod.max_mass or min(m1,m2) < st_mod.min_mass):
+                return PolarizationTuple()
+            if (params['log_alpha'] > st_mod.max_logalp or params['log_alpha'] < st_mod.min_logalp):
+                return PolarizationTuple()
+
+            if 'q1' not in params.keys():
+                params['q1'] = st_mod.q_of_m_logalpha(m1, params['log_alpha'])
+            if 'q2' not in params.keys():
+                params['q2'] = st_mod.q_of_m_logalpha(m2, params['log_alpha'])
 
         # include iota
         if 'cosi' in params.keys():

@@ -195,6 +195,8 @@ def initialize_gwlikelihood_kwargs(opts):
                                                                                   lambda_min=opts.lambda_min,
                                                                                   eos_flag=opts.fix_eos, 
                                                                                   eos_name = opts.fix_eos_name,
+                                                                                  eos_flag_st=opts.fix_eos_st, 
+                                                                                  eos_name_st= opts.fix_eos_name_st,
                                                                                   dist_flag=opts.dist_flag,
                                                                                   dist_max=opts.dist_max,
                                                                                   dist_min=opts.dist_min,
@@ -270,6 +272,7 @@ def initialize_gwprior(ifos,
                        spin_flag='no-spins', spin_max=None,
                        lambda_flag='no-tides', lambda_max=None, lambda_min=None,
                        eos_flag=False , eos_name = None,
+                       eos_flag_st=False , eos_name_st = None,
                        dist_flag='vol', dist_max=None, dist_min=None,
                        time_shift_bounds=None,
                        fixed_names=[], fixed_values=[],
@@ -604,6 +607,15 @@ def initialize_gwprior(ifos,
         else:
             logger.error("Unable to read tidal flag for Prior. Please use one of the following: 'no-tides', 'bns-tides', 'bhns-tides', 'nsbh-tides' or flags for parametrized EOS.")
             raise ValueError("Unable to read tidal flag for Prior. Please use one of the following: 'no-tides', 'bns-tides', 'bhns-tides', 'nsbh-tides' or flags for parametrized EOS.")
+
+    if eos_flag_st:
+        if eos_name_st:
+            dict['EOS_ST'] = eos_name_st
+            dict['ST_model'] = None # initialize the model as None for now
+        
+        else:
+            logger.error("No scalar-tensor EOS name specified")
+            raise ValueError("No scalar-tensor EOS name specified!")
 
     # setting sky position
     dict['ra']  = Parameter(name='ra', min=0., max=2.*np.pi, periodic=1)
