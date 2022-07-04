@@ -1,5 +1,3 @@
-import imp
-from json import load
 import numpy as np
 from scipy.interpolate import interp1d
 from ... import __path__ 
@@ -26,7 +24,7 @@ class Sequence(object):
         M    = dat['M']
         i_MM = np.argmax(M)
         self.max_mass = M[i_MM]
-        self.min_maxx = min(M)
+        self.min_mass = min(M)
         return {key: dat[key][:i_MM] for key in dat.keys()}
         
     def _interpolate_sequence(self):
