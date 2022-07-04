@@ -31,7 +31,7 @@ class ST_model(object):
         self.log_alpha = p[:,7]
         self.R    = p[:,1]
         self.max_mass   = max(self.M)        ;self.min_mass   = min(self.M)
-        self.max_logalp = max(self.log_alpha);self.max_logalp = min(self.log_alpha)
+        self.max_logalp = max(self.log_alpha);self.min_logalp = min(self.log_alpha)
         pass
         
     def _interpolate_model_2d(self):
@@ -45,4 +45,4 @@ class ST_model(object):
         return f_q
 
     def q_of_m_logalpha(self, m=1.35, log_alpha=-3.):
-        return self.interpolators(m, log_alpha)
+        return self.interpolator(m, log_alpha).flatten()[0]
