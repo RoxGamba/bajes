@@ -170,6 +170,15 @@ def initialize_gwlikelihood_kwargs(opts):
     else:
         mphi_bounds = None
 
+    if opts.st_flag_logalpha :
+        # scalar tensor parameter m_phi
+        if opts.logalpha_min != None and opts.logalpha_max != None:
+            logalpha_bounds = [opts.logalpha_min, opts.logalpha_max]
+        else:
+            logalpha_bounds = None 
+    else:
+        logalpha_bounds = None
+
     # check spins
     if opts.spin_max is None and opts.spin_flag != 'no-spins':
         # try to set individual spin priors
@@ -218,6 +227,7 @@ def initialize_gwlikelihood_kwargs(opts):
                                                                                   q1_bounds= q1_bounds,
                                                                                   q2_bounds=q2_bounds,
                                                                                   mphi_bounds=mphi_bounds,
+                                                                                  logalpha_bounds=logalpha_bounds,
                                                                                   marg_phi_ref = opts.marg_phi_ref,
                                                                                   marg_time_shift = opts.marg_time_shift,
                                                                                   tukey_alpha = opts.alpha,
@@ -278,9 +288,10 @@ def initialize_gwprior(ifos,
                        fixed_names=[], fixed_values=[],
                        extra_opt =[], extra_opt_val=[],
                        spcals=None, nspcal=0, nweights=0,
-                       ej_flag = False, ecc_flag = False, st_flag_q = False,st_flag_mphi = False,
+                       ej_flag = False, ecc_flag = False, 
+                       st_flag_q = False,st_flag_mphi = False,st_flag_logalpha = False,
                        energ_bounds=None, angmom_bounds=None, ecc_bounds=None,
-                       q1_bounds = None, q2_bounds = None, mphi_bounds = None,
+                       q1_bounds = None, q2_bounds = None, mphi_bounds = None, logalpha_bounds= None,
                        marg_phi_ref=False, marg_time_shift=False,
                        tukey_alpha=None,
                        lmax=2,
@@ -796,7 +807,14 @@ def initialize_gwprior(ifos,
         if mphi_bounds == None:
                 logger.warning("Requested bounds for mphi parameter is empty. Setting standard bound [0.,1]")
                 mphi_bounds == [0., 1.]
-        dict['mphi'] = Parameter(name='mphi', min=q2_bounds[0], max=q2_bounds[1])
+        dict['mphi'] = Parameter(name='mphi', min=mphi_bounds[0], max=mphi_bounds[1])
+
+    if st_flag_logalpha:
+        if logalpha_bounds == None:
+                logger.warning("Requested bounds for mphi parameter is empty. Setting standard bound [0.,1]")
+                logalpha_bounds == [0., 1.]
+        dict['log_alpha'] = Parameter(name='log_alpha', min=logalpha_bounds[0], max=logalpha_bounds[1])
+
 
     # include NRPMw additional parameters
     if 'NRPMw' in approx:
