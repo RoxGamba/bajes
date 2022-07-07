@@ -9,8 +9,6 @@ from .strain import windowing, lagging
 
 from .utils import compute_lambda_tilde, compute_delta_lambda
 from ..utils.tov import TOVSolver
-from ..utils.sequence import Sequence
-from ..utils.st_model import ST_model
 
 from collections import namedtuple
 PolarizationTuple = namedtuple("PolarizationTuple", ("plus","cross"), defaults=([None],[None]))
@@ -354,10 +352,6 @@ class Waveform(object):
 
         # use fixed EOS
         if 'EOS' in params.keys():
-            if params['Sequence'] == None:
-                # initialize the sequence, do it *just once*
-                params['Sequence'] = Sequence(params['EOS'])
-
             sq  = params['Sequence']
             m1  = params['mtot']*params['q']/(1.+params['q'])
             m2  = params['mtot']/(1.+params['q'])
@@ -375,7 +369,6 @@ class Waveform(object):
         
         # use ST model
         if 'log_alpha' in params.keys():
-            
             st_mod = params['ST_model']
             m1  = params['mtot']*params['q']/(1.+params['q'])
             m2  = params['mtot']/(1.+params['q'])

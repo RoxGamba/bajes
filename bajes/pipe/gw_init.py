@@ -611,7 +611,8 @@ def initialize_gwprior(ifos,
 
         elif eos_flag:
             if eos_name:
-                dict['EOS']     = eos_name
+                dict['EOS']      = Constant('EOS', eos_name)
+                sequence         = Sequence(eos_name)
                 dict['Sequence'] = None # initialize a sequence as None for now
 
             else:
@@ -621,12 +622,11 @@ def initialize_gwprior(ifos,
         else:
             logger.error("Unable to read tidal flag for Prior. Please use one of the following: 'no-tides', 'bns-tides', 'bhns-tides', 'nsbh-tides' or flags for parametrized EOS.")
             raise ValueError("Unable to read tidal flag for Prior. Please use one of the following: 'no-tides', 'bns-tides', 'bhns-tides', 'nsbh-tides' or flags for parametrized EOS.")
-    
+
     if eos_flag_st:
         if eos_name_st:
-            dict['EOS_ST'] = Constant('EOS_ST', eos_name_st)
-            
-            st_mod = ST_model(name=eos_name_st)
+            dict['EOS_ST']  = Constant('EOS_ST', eos_name_st)
+            st_mod          = ST_model(name=eos_name_st)
             dict['ST_model'] = Constant('ST_model', st_mod)
         
         else:
