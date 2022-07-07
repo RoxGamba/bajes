@@ -221,6 +221,7 @@ def initialize_gwlikelihood_kwargs(opts):
                                                                                   ecc_flag = opts.ecc_flag,
                                                                                   st_flag_q  = opts.st_flag_q,
                                                                                   st_flag_mphi = opts.st_flag_mphi,
+                                                                                  st_flag_logalpha = opts.st_flag_logalpha,
                                                                                   energ_bounds=e_bounds,
                                                                                   angmom_bounds=j_bounds,
                                                                                   ecc_bounds=ecc_bounds,
@@ -302,6 +303,8 @@ def initialize_gwprior(ifos,
                        use_mtot=False):
 
     from ..inf.prior import Prior, Parameter, Variable, Constant
+    from ..obs.utils.st_model import ST_model
+    from ..obs.utils.sequence import Sequence
 
     names   = []
     bounds  = []
@@ -618,11 +621,13 @@ def initialize_gwprior(ifos,
         else:
             logger.error("Unable to read tidal flag for Prior. Please use one of the following: 'no-tides', 'bns-tides', 'bhns-tides', 'nsbh-tides' or flags for parametrized EOS.")
             raise ValueError("Unable to read tidal flag for Prior. Please use one of the following: 'no-tides', 'bns-tides', 'bhns-tides', 'nsbh-tides' or flags for parametrized EOS.")
-
+    
     if eos_flag_st:
         if eos_name_st:
-            dict['EOS_ST'] = eos_name_st
-            dict['ST_model'] = None # initialize the model as None for now
+            dict['EOS_ST'] = Constant('EOS_ST', eos_name_st)
+            
+            st_mod = ST_model(name=eos_name_st)
+            dict['ST_model'] = Constant('ST_model', st_mod)
         
         else:
             logger.error("No scalar-tensor EOS name specified")
@@ -811,8 +816,8 @@ def initialize_gwprior(ifos,
 
     if st_flag_logalpha:
         if logalpha_bounds == None:
-                logger.warning("Requested bounds for mphi parameter is empty. Setting standard bound [0.,1]")
-                logalpha_bounds == [0., 1.]
+                logger.warning("Requested bounds for alpha parameter is empty. Setting standard bound [-6,-0.05]")
+                logalpha_bounds == [-6., -0.05]
         dict['log_alpha'] = Parameter(name='log_alpha', min=logalpha_bounds[0], max=logalpha_bounds[1])
 
 

@@ -375,9 +375,6 @@ class Waveform(object):
         
         # use ST model
         if 'log_alpha' in params.keys():
-            if params['ST_model'] == None:
-                # initialize the ST model, do it *just once*
-                params['ST_model'] = ST_model(name=params['EOS_ST'])
             
             st_mod = params['ST_model']
             m1  = params['mtot']*params['q']/(1.+params['q'])
@@ -388,7 +385,6 @@ class Waveform(object):
                 return PolarizationTuple()
             if (params['log_alpha'] > st_mod.max_logalp or params['log_alpha'] < st_mod.min_logalp):
                 return PolarizationTuple()
-
             if 'q1' not in params.keys():
                 params['q1'] = st_mod.q_of_m_logalpha(m1, params['log_alpha'])
             if 'q2' not in params.keys():
