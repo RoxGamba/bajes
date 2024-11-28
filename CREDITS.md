@@ -1,7 +1,7 @@
 # Credits
 
 *bajes* has been developed by Matteo Breschi with the contribution of
-Gregorio Carullo, Rossella Gamba, Ssohrab Borhanian, Emil Donkersloot and Sebastiano Bernuzzi.
+Giulia Huez, Gregorio Carullo, Rossella Gamba, Ssohrab Borhanian, Emil Donkersloot and Sebastiano Bernuzzi.
 
 If you use this software, please include the following [citation](https://arxiv.org/abs/2102.00017):
 
