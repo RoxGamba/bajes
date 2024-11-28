@@ -388,6 +388,60 @@ def teobresums_spa_wrapper(freqs, params):
     f , rhplus, ihplus, rhcross, ihcross = teobresums(params_teob)
     return rhplus-1j*ihplus, rhcross-1j*ihcross
 
+def teobresums_spa_a6cfree_wrapper(freqs, params):
+
+    #unwrap lm modes
+    if params['lmax'] == 0:
+        modes = [1]
+    else:
+        modes = l_to_k(params['lmax'])
+
+    # set TEOB dict
+    params_teob = { 'M':                    params['mtot'],
+                    'q':                    params['q'],
+                    'chi1':                 params['s1z'],
+                    'chi2':                 params['s2z'],
+                    'chi1z':                params['s1z'],
+                    'chi2z':                params['s2z'],
+                    'LambdaAl2':            params['lambda1'],
+                    'LambdaBl2':            params['lambda2'],
+                    'distance':             params['distance'],
+                    'inclination':          params['iota'],
+                    'coalescence_angle':    params['phi_ref'],
+                    'srate':                params['srate'],
+                    'srate_interp':         params['srate'],
+                    'use_geometric_units':  "no",
+                    'output_hpc':           "no",
+                    'output_multipoles':    "no",
+                    'use_mode_lm':          modes,
+                    'domain':               1,
+                    'interp_freqs':         "yes",
+                    'freqs':                freqs.tolist(),
+                    'initial_frequency':    params['f_min'],
+                    'a6c':                  params['TEOBResumS_a6c']
+                    }
+
+    if params['eccentricity'] != 0:
+        params_teob['ecc'] = params['eccentricity']
+
+    if params['s1x'] != 0:
+        params_teob['chi1x'] = params['s1x']
+    if params['s1y'] != 0:
+        params_teob['chi1y'] = params['s1y']
+    if params['s2x'] != 0:
+        params_teob['chi2x'] = params['s2x']
+    if params['s2y'] != 0:
+        params_teob['chi2y'] = params['s2y']
+    check = params['s1x']**2+params['s1y']**2+params['s2x']**2+params['s2y']**2
+    if check > 1e-7:
+        params_teob['use_spins'] = 2
+
+    # check for additional options
+    additional_opts(params_teob, params)
+
+    f , rhplus, ihplus, rhcross, ihcross = teobresums(params_teob)
+    return rhplus-1j*ihplus, rhcross-1j*ihcross
+
 def teobresums_spa_nrpmw_wrapper(freqs, params):
 
     #unwrap lm modes

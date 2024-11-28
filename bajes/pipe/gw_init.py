@@ -785,7 +785,7 @@ def initialize_gwprior(ifos,
         dict['eccentricity'] = Constant('eccentricity', 0.)
 
     # include TEOB additional parameters
-    if approx == 'TEOBResumS_a6cfree':
+    if 'a6cfree' in approx:
         if a6c_bounds == None:
             logger.warning("Requested bounds for a6c parameter is empty. Setting standard bound [-65, -10]")
             a6c_bounds = [-65, -10]
