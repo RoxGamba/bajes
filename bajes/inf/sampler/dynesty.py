@@ -227,6 +227,7 @@ class SamplerDynesty(SamplerBody):
         self.sampler    = self._initialize_sampler(like_fn,
                                                    ptform_fn,
                                                    proposals,
+                                                   dynesty.__version__,
                                                    sampler_kwargs)
 
     def _initialize_sampler(self, like_fn, ptform_fn, proposals, dynesty_version, kwargs):
