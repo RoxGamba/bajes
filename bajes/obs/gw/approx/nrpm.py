@@ -163,7 +163,7 @@ def NRPM(srate, seglen, Mtot, q, kappa2T, distance, inclination, phi_merg,
     # initialize hs
     hplus   = np.zeros(Npt)
     hcross  = np.zeros(Npt)
-    h22     = np.zeros(Npt)
+    h22     = np.zeros(Npt, dtype=complex)
 
     # compute taper pre-merger
     amppre, phipre, dfreq = NRPM_TaperBeforeMerger(time[indspre], Mtot , q, fm, am)
